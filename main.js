@@ -1,6 +1,9 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const botConfig = require('./botConfig.json')
 const auth = require('./auth.json');
+
+
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -104,6 +107,7 @@ client.on('raw', async event => {
                         'VIEW_CHANNEL': true
                     })
                 }
+
             }
             if (type == 'MESSAGE_REACTION_REMOVE') {
                 if (event.d.emoji.name === '🗣') {
@@ -116,6 +120,16 @@ client.on('raw', async event => {
                         'VIEW_CHANNEL': false
                     })
                 }
+            }
+
+            if (event.d.emoji.name === '📛') {
+                channel.send('Чтоб заблокировать доступ к своей комнате игроку напишите `!ban @Игрок`. Пример: `!ban @kr0cky#1337`').then(msg => msg.delete(1000 * 45))
+            }
+            if (event.d.emoji.name === '🛑') {
+                channel.send('Чтоб разблокировать доступ к своей игроку напишите `!ban @Игрок`. Пример: `!ban @kr0cky#1337`').then(msg => msg.delete(1000 * 45))
+            }
+            if (event.d.emoji.name === '🔅') {
+                channel.send('Укажите 6ти значный Hex-код после #. `Пример:#89df63`').then(msg => msg.delete(1000 * 45))
             }
 
 
@@ -138,68 +152,11 @@ client.on('guildMemberUpdate', async (msg) => {
             }
         }
     }
-})
+});
 
 
-client.on('voiceStateUpdate', (oldMember, newMember) => {
-    let newUserChannel = newMember.voiceChannel
-    let oldUserChannel = oldMember.voiceChannel
-    let channel = client.channels.find(x => x.id === '565765408578207744')
-    let guild = client.guilds.get("303793341529718784");
-    let user = guild.members.find(user => user.id === newMember.id)
-    if (oldUserChannel !== undefined && newUserChannel !== undefined) {
-        if (oldUserChannel == newUserChannel) {} else {
-            let typicalJump = {
-                jump: ':left_right_arrow: Участник ' + newMember + ' переместился из канала ' + '`' + oldUserChannel.name + '` в канал `' + newUserChannel.name + '`'
-            }
-            let notTypical = {
-                jump: {
-                    embed: {
-                        description: typicalJump.jump
-                    }
-                }
-            }
-            if (user.roles.find(r => r.id === "365485162466770956") || user.roles.find(r => r.id === "317322435751837697")) {
-                channel.send(notTypical.jump)
-            } else {
-                channel.send(typicalJump.jump)
-            }
-        }
-    } else if (oldUserChannel === undefined && newUserChannel !== undefined) {
-        if (oldUserChannel == newUserChannel) {} else {
-            let typicalEnter = {
-                enter: ':mans_shoe: Участник' + newMember + ' вошёл в канал ' + '`' + newUserChannel.name + '`'
-            }
-            let notTypical = {
-                jump: {
-                    embed: {
-                        description: typicalEnter.enter
-                    }
-                }
-            }
-            if (user.roles.find(r => r.id === "365485162466770956") || user.roles.find(r => r.id === "317322435751837697")) {
-                channel.send(notTypical.jump)
-            } else {
-                channel.send(typicalEnter.enter)
-            }
-        }
-    } else if (newUserChannel === undefined) {
-        if (oldUserChannel == newUserChannel) {} else {
-            let typicalLeave = {
-                leave: ':runner: Участник' + newMember + ' вышел из канал ' + '`' + oldUserChannel.name + '`'
-            }
-            let notTypical = {
-                jump: {
-                    embed: {
-                        description: typicalLeave.leave
-                    }
-                }
-            }
-            if (user.roles.find(r => r.id === "365485162466770956") || user.roles.find(r => r.id === "317322435751837697")) {
-                channel.send(notTypical.jump)
-            } else {
-                channel.send(typicalLeave.leave)
-            }
-        }
-    }
-})
+
+
+['commands', 'aliases','prefix'].forEach(x => client[x] = new Discord.Collection());
+['console', 'command', 'event'].forEach(x => require(`./handlers/${x}.js`).run(client));
+

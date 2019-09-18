@@ -6,7 +6,8 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "image-downloader": "^3.5.0",
-    "img-diff-js": "^0.4.1"
+    "img-diff-js": "^0.4.1",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {},
   "scripts": {
