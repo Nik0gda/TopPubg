@@ -48,6 +48,9 @@ module.exports = {
                 roles_tpp.forEach(obj => {
                     if (obj.adr >= adr || obj.adr == 500) guild.channels.get(truFal).overwritePermissions(guild.roles.get(obj.id),{'VIEW_CHANNEL':true,'CONNECT':true})
                 });
+                let message = await msg.reply('Вы успешно поменяли ADR в своей комнате, теперь только люди с адром TPP ' + adr + '+')
+                message.delete(10 * 1000)
+                return;
             } else if (msg.content[0] == 'f' || msg.content[1] == 'f') {
                 let index = msg.content.trim().split(/ +/g)[0].indexOf('f')+1
                     let adr = msg.content.slice(index).trim().split(/ +/g)
@@ -60,6 +63,8 @@ module.exports = {
                 roles_fpp.forEach(obj => {
                     if (obj.adr >= adr || obj.adr == 500) guild.channels.get(truFal).overwritePermissions(guild.roles.get(obj.id),{'VIEW_CHANNEL':true,'CONNECT':true})
                 });
+                let message = await msg.author.reply('Вы успешно поменяли ADR в своей комнате, теперь только люди с адром FPP ' + adr + '+')
+                return;
             }
         }
     }

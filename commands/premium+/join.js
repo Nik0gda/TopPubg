@@ -12,33 +12,29 @@ module.exports = {
                 msg.delete()
                 let guild = client.guilds.get("303793341529718784");
                 if(!guild.members.get(msg.author.id).roles.has('562728244785315890')){
-                    msg.channel.send(`Чтоб использовать эту команду вам нужна роль \`Premium+\``).then(mssg => mssg.delete(15 * 1000))
+                    msg.author.send(`Чтоб использовать эту команду вам нужна роль \`Premium+\``)
                     return
                 }
                 if(!msg.mentions.members.first()){
-                    let message = await msg.channel.send(`Пожалуйста укажите игрока в комнату к которому вы хотите зайти , пример: \`!join @kr0cky#1337\`!`);
-                    message.delete(15 * 1000);
+                    let message = await msg.author.send(`Пожалуйста укажите игрока в комнату к которому вы хотите зайти , пример: \`!join @kr0cky#1337\`!`);
                     return;
                 }
                 
                 let mentioned_user = msg.mentions.members.first()
                 if(!mentioned_user.voiceChannel){
-                    let message = await msg.channel.send(`Игрок в комнату к каторому вы хотите зайти не находится на сервере!`);
-                    message.delete(15 * 1000);
+                    let message = await msg.author.send(`Игрок в комнату к которому вы хотите зайти не находится на сервере!`);
                     return;
                 }
                 if(!guild.members.get(msg.author.id).voiceChannel){
-                    let message = await msg.channel.send(`Вам надо находится в голосовой комнате чтоб использовать это команду!`);
-                    message.delete(15 * 1000);
+                    let message = await msg.author.send(`Вам надо находится в голосовой комнате чтоб использовать это команду!`);
                     return;
                 }
                 guild.members.get(msg.author.id).setVoiceChannel(mentioned_user.voiceChannel)
-                let message = await msg.channel.send(`Вы успешно переместились в комнату \`${mentioned_user.voiceChannel}\` к игроку ${mentioned_user}`)
-                message.delete(15 * 1000)
+                let message = await msg.author.send(`:fleur_de_lis: Вы успешно переместились в комнату \`${mentioned_user.voiceChannel.name}\` к игроку ${mentioned_user}`)
                 let embed = new Discord.RichEmbed()
                 .setColor('#0099ff')
                 .setTimestamp()
-                .setDescription(`Игрок ${guild.members.get(msg.author.id)} успешно переместился в комнату \`${mentioned_user.voiceChannel}\` к игроку ${mentioned_user}`)
+                .setDescription(`Игрок ${guild.members.get(msg.author.id)} успешно переместился в комнату \`${mentioned_user.voiceChannel.name}\` к игроку ${mentioned_user}`)
                 guild.channels.get('563839723395874827').send(embed)
             }
         }

@@ -22,6 +22,7 @@ client.on('raw', async event => {
     } = event;
     let type = event.t
     let user = client.users.get(data.user_id);
+    if (user.bot) return
     const channel = client.channels.get(data.channel_id)
     channel.fetchMessage(data.message_id).then(message => {
         if (channel.id === '622358203614625792') {
@@ -78,6 +79,8 @@ client.on('raw', async event => {
                         return
                     } else {
                         user.addRole(stats)
+                        user.send('🔗 Роль `🔫Stats` была успешно присвоена!')
+                        channel.send('🔗 Роль `🔫Stats` была успешно присвоена!')
                     }
                 }
             }
@@ -90,6 +93,8 @@ client.on('raw', async event => {
                     } else {
                         console.log(3)
                         user.removeRole(stats)
+                        user.send('🔗 Роль `🔫Stats` была успешно снята!')
+                        channel.send('🔗 Роль `🔫Stats` была успешно снята!').then(mssg => mssg.delete(15 * 1000))
                     }
                 }
 
@@ -101,6 +106,8 @@ client.on('raw', async event => {
                     guild.channels.get(truFal).overwritePermissions(every, {
                         'USE_VAD': false
                     })
+                    user.send(`🗣 Активация по голосу в \`${guild.channels.get(truFal).name}\` была активирована!`)
+                    channel.send(`🗣 Активация по голосу в \`${guild.channels.get(truFal).name}\` была активирована!`).then(mssg => mssg.delete(15 * 1000))
                 }
                 if (event.d.emoji.name === '🏠') {
                     guild.channels.get(truFal).overwritePermissions(every, {
@@ -114,6 +121,8 @@ client.on('raw', async event => {
                     guild.channels.get(truFal).overwritePermissions(every, {
                         'USE_VAD': true
                     })
+                    user.send(`🗣 Активация по голосу в \`${guild.channels.get(truFal).name}\` была деактивирована!`)
+                    channel.send(`🗣 Активация по голосу в \`${guild.channels.get(truFal).name}\` была деактивирована!`).then(mssg => mssg.delete(15 * 1000))
                 }
                 if (event.d.emoji.name === '🏠') {
                     guild.channels.get(truFal).overwritePermissions(every, {
@@ -123,10 +132,71 @@ client.on('raw', async event => {
             }
 
             if (event.d.emoji.name === '📛') {
-                channel.send('Чтоб заблокировать доступ к своей комнате игроку напишите `!ban @Игрок`. Пример: `!ban @kr0cky#1337`').then(msg => msg.delete(1000 * 45))
+                function pagination(obj,guild,author_id){
+                    let text = ``
+                    for (i in obj){
+                        if(author_id.id === obj[i].id) {}else{
+                            text+= `\n       ${obj[i].number}: ${guild.members.get(obj[i].id)}`
+                        }
+                           
+                    }
+                    return text
+                    
+                }
+                function sleep(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                }
+                let user_obj = []
+                let number = 0
+                let channel = guild.channels.get(truFal)
+                let numbers = [':one:' , ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:', ':eight:', ':nine:']
+                let emojis = ['1⃣','2⃣','3⃣','3⃣','4⃣','5⃣','6⃣','7⃣','8⃣','9⃣']
+                channel.members.forEach(x => {
+                   if(number > 8){
+                       return
+                   }
+                   if(x.id === user.id){
+
+                   }else{
+                    user_obj.push({
+                       'number' : emojis[number],
+                       'id' : x.id
+                    })
+                    number++
+                }
+                })
+                
+                client.channels.get(data.channel_id).send(`📛 Выберите, кого вы хотите забанить:${pagination(user_obj,guild,user.id)}\nили напишите \`!ban @kr0cky#1337\`
+                    `).then(message =>{
+                        for(let i = 0; i < number; i++){
+                        message.react(emojis[i]);
+                        sleep(200)
+                        }
+                        let member = user
+                        console.log(member.id)
+                        
+                        const filter = (reaction,action_member) => action_member.id === member.id
+                        console.log(filter)
+                        const collector = message.createReactionCollector(filter, { time: 20000 });
+                        message.delete(20*1000)
+                        collector.on('collect', r => {console.log(`Collected ${r.emoji.name},banned ${user_obj.find(x => x.number === r.emoji.name).id}`)
+                                        if(guild.members.get(user_obj.find(x => x.number === r.emoji.name).id).voiceChannel){
+                                            guild.members.get(user_obj.find(x => x.number === r.emoji.name).id).setVoiceChannel(guild.channels.get('372491862100934658'))
+                                            guild.channels.get(truFal).overwritePermissions(guild.members.get(user_obj.find(x => x.number === r.emoji.name).id),{
+                                                'VIEW_CHANNEL': false,
+                                                'CONNECT': false
+                                                
+                                            })
+                                        }   
+                    });
+                        collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+                    })
+                    // Create a reaction collector
+              
+                console.log(user_obj)
             }
             if (event.d.emoji.name === '🛑') {
-                channel.send('Чтоб разблокировать доступ к своей комнате игроку напишите `!ban @Игрок`. Пример: `!ban @kr0cky#1337`').then(msg => msg.delete(1000 * 45))
+                channel.send('🛑 Чтоб разблокировать доступ к своей комнате игроку напишите `!ban @Игрок`. Пример: `!ban @kr0cky#1337`').then(msg => msg.delete(1000 * 25))
             }
 
 
@@ -142,30 +212,82 @@ client.on('raw', async event => {
 
             if (event.d.emoji.name === '🔅') {
                 if (!checkForPrem(channel,user,guild)) return
-                channel.send('Укажите 6ти значный Hex-код после #. `Пример:#89df63`').then(msg => msg.delete(1000 * 45))
+                function getRandomColor() {
+                    var letters = '0123456789ABCDEF';
+                    var color = '#';
+                    for (var i = 0; i < 6; i++) {
+                      color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                  }
+                channel.send(`🔅 Укажите 6-ти значный Hex-код после #. \`Пример: ${getRandomColor()}\``)
             }
+         
             if (event.d.emoji.name === '🎯') {
                 if (!checkForPrem(channel,user,guild)) return
-                channel.send('Чтобы установить ограничения на вход в премиум комнату по адр напишите `t`(для режима tpp) или `f`(для режима fpp) для быбора режима и после них количество адр. Пример: `f350`.').then(msg => msg.delete(1000 * 45))
+                var premRoleId = user.roles.find(x => x.name.toLowerCase().startsWith('prem')).id
+                let premCategory = guild.channels.get("371230249398173708");
+                let channels = premCategory.children
+                let truFal = 0
+                channels.forEach(element => {
+                    if (element.permissionOverwrites.has(premRoleId)) {
+                        truFal = element.id
+                    }
+                });
+                if (truFal == 0) {
+                    channel.send('У вас нет своей комнаты!').then(message =>{
+                        message.delete(10 * 1000)
+                    })
+                    return;
+                }
+                user.send('🎯 Чтобы установить ограничения на вход в премиум комнату `' + guild.channels.get(truFal).name + '` по ADR напишите `t`(для режима tpp) или `f`(для режима fpp) для быбора режима и после них количество ADR. Пример: `f350`.')
             }
             if (event.d.emoji.name === '✅') {
                 if (!checkForPrem(channel,user,guild)) return
-                channel.send('Чтоб добавить друга в премиум комнаты (игрок будет всегда ее видеть, даже тогда когда там никого нет). Пример: `!friend @kr0cky#1337`').then(msg => msg.delete(1000 * 45))
+                channel.send('✅ Чтоб добавить друга в премиум комнаты (игрок будет всегда ее видеть, даже тогда когда там никого нет). Пример: `!friend @kr0cky#1337`').then(msg => msg.delete(1000 * 25))
             }
             if (event.d.emoji.name === '🚷') {
                 if (!checkForPrem(channel,user,guild)) return
-                channel.send('Чтоб удалить друга из премиум комнаты (игрок больше не будет ее видеть когда в ней никого нет). Пример: `!un friend @kr0cky#1337``').then(msg => msg.delete(1000 * 45))
+                channel.send('🚷 Чтоб удалить друга из премиум комнаты (игрок больше не будет ее видеть когда в ней никого нет). Пример: `!un friend @kr0cky#1337`').then(msg => msg.delete(1000 * 25))
             }
             if (event.d.emoji.name === '⚜') {
                 if (!checkForPrem(channel,user,guild)) return
-                channel.send('Чтоб зайти в полную руму к игроку напишите `!join @Игрок`. Пример: `!join @kr0cky#1337`').then(msg => msg.delete(1000 * 45))
+                channel.send(':fleur_de_lis: Чтоб зайти в комнату к игроку напишите `!join @Игрок`. Пример: `!join @kr0cky#1337`').then(msg => msg.delete(1000 * 25))
             }
             if (event.d.emoji.name === '🔃') {
                 if (!checkForPrem(channel,user,guild)) return
-                channel.send('Чтоб переместить другого игрока себе в руму напишите `!move @Игрок`. Пример: `!move @kr0cky#1337`').then(msg => msg.delete(1000 * 45))
+                channel.send('🔃 Чтоб переместить другого игрока себе в руму напишите `!move @Игрок`. Пример: `!move @kr0cky#1337`').then(msg => msg.delete(1000 * 25))
                 
             }
-
+            if (event.d.emoji.name === '♨') {
+                if (!checkForPrem(channel,user,guild)) return
+                var premRoleId = user.roles.find(x => x.name.toLowerCase().startsWith('prem')).id
+                let premCategory = guild.channels.get("371230249398173708");
+                let channels = premCategory.children
+                let truFal = 0
+                channels.forEach(element => {
+                    if (element.permissionOverwrites.has(premRoleId)) {
+                        truFal = element.id
+                    }
+                });
+                if (truFal == 0) {
+                    channel.send('У вас нет своей комнаты!').then(message =>{
+                        message.delete(10 * 1000)
+                    })
+                    return;
+                }
+                let roles_fpp = [{adr:200,id:"412985225660989450"},{adr:250,id:"412985247827755008"},{adr:300,id:"412985257722118144"},{adr:350,id:"412985270594568202"},{adr:400,id:"412985280451313667"},
+                {adr:450,id:"412985292191039498"},{adr:500,id:"412985304006262784"}]
+                let roles_tpp = [{adr:200,id:"412984749909344256"},{adr:250,id:"412984935805091862"},{adr:300,id:"412985073307090945"},{adr:350,id:"412985087483707394"},{adr:400,id:"412985097998958592"},
+                {adr:450,id:"412985109088698369"},{adr:500,id:"412985121180745728"}]
+                guild.channels.get(truFal).permissionOverwrites.forEach(x => {
+                    if (roles_tpp.find(y => y.id === x.id || roles_fpp.find(y => y.id === x.id))) {
+                        x.delete()
+                    }
+                })
+                channel.send(`:hotsprings: Все ограничения по ADR с \`${guild.channels.get(truFal).name}\` сняты.`).then(msg => msg.delete(1000 * 15))
+       
+            }
             
         }
     })

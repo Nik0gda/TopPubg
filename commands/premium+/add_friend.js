@@ -61,8 +61,7 @@ module.exports = {
                 'CONNECT': true
                 
             })
-            let message = await msg.reply(`Вы успешно добавили игрока ${msg.mentions.members.first()} в друзья!`)
-            message.delete(10*1000)
+            let message = await msg.author.reply(`Вы успешно добавили игрока ${msg.mentions.members.first()} в друзья!`)
             guild.channels.get('563839723395874827').send(`${user} добавил себе в друзья игрока ${msg.mentions.members.first()}`)
 
         }

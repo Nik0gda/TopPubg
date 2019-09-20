@@ -34,8 +34,7 @@ module.exports = {
                         return;
                    }
                     guild.channels.get(truFal).permissionOverwrites.get(msg.mentions.members.first().id).delete()
-                    let message = await msg.reply(`Вы успешно разбанили игрока ${msg.mentions.members.first()} у себя в комнате!`)
-                    message.delete(10*1000)
+                    let message = await msg.author.send(`Вы успешно разбанили игрока ${msg.mentions.members.first()} у себя в комнате!`)
                     guild.channels.get('563839723395874827').send(`${user} разбанил у себя в комнате игрока ${msg.mentions.members.first()}`)
                 }
                
