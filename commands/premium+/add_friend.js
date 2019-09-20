@@ -21,6 +21,10 @@ module.exports = {
                     truFal = element.id
                 }
             });
+            if(!guild.members.get(user.id).roles.has('562728244785315890')){
+                msg.channel.send(`Чтоб использовать эту команду вам нужна роль \`Premium+\``).then(mssg => mssg.delete(15 * 1000))
+                return
+            }
             if (truFal == 0) {
                 let message = await msg.reply('У вас нет своей комнаты!')
                 message.delete(10 * 1000)

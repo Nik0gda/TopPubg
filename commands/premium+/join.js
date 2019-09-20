@@ -11,11 +11,16 @@ module.exports = {
             if (msg.channel.id === '622737189364695040') {
                 msg.delete()
                 let guild = client.guilds.get("303793341529718784");
+                if(!guild.members.get(msg.author.id).roles.has('562728244785315890')){
+                    msg.channel.send(`Чтоб использовать эту команду вам нужна роль \`Premium+\``).then(mssg => mssg.delete(15 * 1000))
+                    return
+                }
                 if(!msg.mentions.members.first()){
                     let message = await msg.channel.send(`Пожалуйста укажите игрока в комнату к которому вы хотите зайти , пример: \`!join @kr0cky#1337\`!`);
                     message.delete(15 * 1000);
                     return;
                 }
+                
                 let mentioned_user = msg.mentions.members.first()
                 if(!mentioned_user.voiceChannel){
                     let message = await msg.channel.send(`Игрок в комнату к каторому вы хотите зайти не находится на сервере!`);
@@ -33,7 +38,7 @@ module.exports = {
                 let embed = new Discord.RichEmbed()
                 .setColor('#0099ff')
                 .setTimestamp()
-                .setDescription(`Игрок ${guild.members.get(msg.author.id)} успешно переместились в комнату \`${mentioned_user.voiceChannel}\` к игроку ${mentioned_user}`)
+                .setDescription(`Игрок ${guild.members.get(msg.author.id)} успешно переместился в комнату \`${mentioned_user.voiceChannel}\` к игроку ${mentioned_user}`)
                 guild.channels.get('563839723395874827').send(embed)
             }
         }

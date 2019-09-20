@@ -20,6 +20,10 @@ module.exports = {
                 message.delete(1000 * 10)
                 return;
             }
+            if(!guild.members.get(user.id).roles.has('562728244785315890')){
+                msg.channel.send(`Чтоб использовать эту команду вам нужна роль \`Premium+\``).then(mssg => mssg.delete(15 * 1000))
+                return
+            }
             var isOk  = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(code)
             if(!isOk){
                 let message = await msg.channel.send('Вы ввели код не правельного формата, он должен быть hex. `Пример: #996515`' )

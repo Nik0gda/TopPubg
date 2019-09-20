@@ -17,6 +17,10 @@ module.exports = {
                         let premCategory = guild.channels.get("371230249398173708");
                         let channels = premCategory.children
                         let truFal = 0
+                        if(!guild.members.get(user.id).roles.has('562728244785315890')){
+                            msg.channel.send(`Чтоб использовать эту команду вам нужна роль \`Premium+\``).then(mssg => mssg.delete(15 * 1000))
+                            return
+                        }
                         channels.forEach(element => {
                             if (element.permissionOverwrites.has(premRoleId)) {
                                 truFal = element.id
