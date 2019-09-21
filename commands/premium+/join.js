@@ -16,21 +16,21 @@ module.exports = {
                     return
                 }
                 if(!msg.mentions.members.first()){
-                    let message = await msg.author.send(`Пожалуйста укажите игрока в комнату к которому вы хотите зайти , пример: \`!join @kr0cky#1337\`!`);
+                    msg.author.send(`Пожалуйста укажите игрока в комнату к которому вы хотите зайти , пример: \`!join @kr0cky#1337\`!`);
                     return;
                 }
                 
                 let mentioned_user = msg.mentions.members.first()
                 if(!mentioned_user.voiceChannel){
-                    let message = await msg.author.send(`Игрок в комнату к которому вы хотите зайти не находится на сервере!`);
+                    msg.author.send(`Игрок в комнату к которому вы хотите зайти не находится на сервере!`);
                     return;
                 }
                 if(!guild.members.get(msg.author.id).voiceChannel){
-                    let message = await msg.author.send(`Вам надо находится в голосовой комнате чтоб использовать это команду!`);
+                    msg.author.send(`Вам надо находится в голосовой комнате чтоб использовать это команду!`);
                     return;
                 }
                 guild.members.get(msg.author.id).setVoiceChannel(mentioned_user.voiceChannel)
-                let message = await msg.author.send(`:fleur_de_lis: Вы успешно переместились в комнату \`${mentioned_user.voiceChannel.name}\` к игроку ${mentioned_user}`)
+                msg.author.send(`:fleur_de_lis: Вы успешно переместились в комнату \`${mentioned_user.voiceChannel.name}\` к игроку ${mentioned_user}`)
                 let embed = new Discord.RichEmbed()
                 .setColor('#0099ff')
                 .setTimestamp()
