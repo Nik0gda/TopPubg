@@ -33,8 +33,7 @@ module.exports = {
                         'CONNECT': false
                         
                     })
-                    let message = await msg.author.reply(`Вы успешно забанили игрока ${msg.mentions.members.first()} у себя в комнате!`)
-                    guild.channels.get('563839723395874827').send(`${user} забанил у себя в комнате игрока ${msg.mentions.members.first()}`)
+                    await msg.reply(`Вы успешно забанили игрока ${msg.mentions.members.first()} у себя в комнате!`)
                 }
                
             }

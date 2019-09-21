@@ -130,9 +130,7 @@ client.on('raw', async event => {
                     })
                 }
             }
-
-            if (event.d.emoji.name === '📛') {
-                function pagination(obj,guild,author_id){
+     function pagination(obj,guild,author_id){
                     let text = ``
                     for (i in obj){
                         if(author_id.id === obj[i].id) {}else{
@@ -146,6 +144,8 @@ client.on('raw', async event => {
                 function sleep(ms) {
                     return new Promise(resolve => setTimeout(resolve, ms));
                 }
+            if (event.d.emoji.name === '📛') {
+           
                 let user_obj = []
                 let number = 0
                 let channel = guild.channels.get(truFal)
@@ -183,10 +183,10 @@ client.on('raw', async event => {
                                         if(guild.members.get(user_obj.find(x => x.number === r.emoji.name).id).voiceChannel){
                                             guild.members.get(user_obj.find(x => x.number === r.emoji.name).id).setVoiceChannel(guild.channels.get('372491862100934658'))
                                             guild.channels.get(truFal).overwritePermissions(guild.members.get(user_obj.find(x => x.number === r.emoji.name).id),{
-                                                'VIEW_CHANNEL': false,
                                                 'CONNECT': false
                                                 
                                             })
+                                            user.send(`Вы успешно забанили ${guild.members.get(user_obj.find(x => x.number === r.emoji.name).id)} в комнате ${guild.channels.get(truFal).name}`)
                                         }   
                     });
                         collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -195,8 +195,54 @@ client.on('raw', async event => {
               
                 console.log(user_obj)
             }
+
+
+
             if (event.d.emoji.name === '🛑') {
-                channel.send('🛑 Чтоб разблокировать доступ к своей комнате игроку напишите `!ban @Игрок`. Пример: `!ban @kr0cky#1337`').then(msg => msg.delete(1000 * 25))
+               let emojis = ['1⃣','2⃣','3⃣','3⃣','4⃣','5⃣','6⃣','7⃣','8⃣','9⃣']
+               let banned_players = []
+               let number = 0
+               let user_obj = []
+               guild.channels.get(truFal).permissionOverwrites.forEach(x => {
+                   if(number > 8){
+                        return
+                    } 
+                   if(x.type === 'member'){
+                    banned_players.push(x.id)
+                    if(!guild.channels.get(truFal).permissionsFor(guild.members.get(x.id)).has('CONNECT',false)){
+                        if(x.id === user.id){}else{
+          
+                            user_obj.push({
+                               'number' : emojis[number],
+                               'id' : x.id
+                            })
+                            number++
+                        }
+                    }
+                    
+                   }
+               })
+               console.log(user_obj)
+                client.channels.get(data.channel_id).send(`📛 Выберите, кого вы хотите разбанить:${pagination(user_obj,guild,user.id)}\nили напишите \`!unban @kr0cky#1337\`
+                `).then(message =>{
+                    for(let i = 0; i < number; i++){
+                    message.react(emojis[i]);
+                    sleep(200)
+                    }
+                    let member = user
+                    console.log(member.id)
+                    
+                    const filter = (reaction,action_member) => action_member.id === member.id
+                    console.log(filter)
+                    const collector = message.createReactionCollector(filter, { time: 20000 });
+                    message.delete(20*1000)
+                    collector.on('collect', r => {console.log(`Collected ${r.emoji.name},unbanned ${user_obj.find(x => x.number === r.emoji.name).id}`);
+                    guild.channels.get(truFal).permissionOverwrites.get(user_obj.find(x => x.number === r.emoji.name).id).delete()
+                    user.send(`Вы успешно разбанили ${guild.members.get(user_obj.find(x => x.number === r.emoji.name).id)} в комнате ${guild.channels.get(truFal).name}`)
+                });
+                    collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+                })
+                // Create a reaction collector
             }
 
 

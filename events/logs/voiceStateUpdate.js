@@ -1,5 +1,4 @@
 module.exports = async (client, oldMember, newMember) => {
-    console.log(1)
     let newUserChannel = newMember.voiceChannel
     let oldUserChannel = oldMember.voiceChannel
     let channel = client.channels.find(x => x.id === '565765408578207744')
@@ -22,7 +21,7 @@ module.exports = async (client, oldMember, newMember) => {
     if (oldUserChannel !== undefined && newUserChannel !== undefined) {
         if (oldUserChannel == newUserChannel) {} else {
             let typicalJump = {
-                jump :  ' :left_right_arrow: Участник ' + newMember + ' переместился из канала ' + '`' + oldUserChannel.name + '` в канал `' + newUserChannel.name + '` '+dateTime
+                jump :  ' :left_right_arrow: Участник ' + newMember + ' переместился из канала ' + '`' + oldUserChannel.name + '` в канал `' + newUserChannel.name + '` [`'+dateTime + '`]'
             }
             let notTypical = {
                 jump: {
@@ -40,7 +39,7 @@ module.exports = async (client, oldMember, newMember) => {
     } else if (oldUserChannel === undefined && newUserChannel !== undefined) {
         if (oldUserChannel == newUserChannel) {} else {
             let typicalEnter = {
-                enter: ':mans_shoe: Участник' + newMember + ' вошёл в канал ' + '`' + newUserChannel.name + '` ' +dateTime
+                enter: ':mans_shoe: Участник' + newMember + ' вошёл в канал ' + '`' + newUserChannel.name + '` [`'+dateTime + '`]'
             }
             let notTypical = {
                 jump: {
@@ -58,7 +57,7 @@ module.exports = async (client, oldMember, newMember) => {
     } else if (newUserChannel === undefined) {
         if (oldUserChannel == newUserChannel) {} else {
             let typicalLeave = {
-                leave:':runner: Участник' + newMember + ' вышел из канал ' + '`' + oldUserChannel.name + '` ' +dateTime
+                leave:':runner: Участник' + newMember + ' вышел из канал ' + '`' + oldUserChannel.name + '` [`'+dateTime + '`]'
             }
             let notTypical = {
                 jump: {
