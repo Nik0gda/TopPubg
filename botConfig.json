@@ -1,3 +1,16 @@
 {
-    "prefix": "!"
+    "prefix": "!",
+    "publics": ["playpubg"],
+    "publics_channel":["378554913786953728"],
+    "to_mention": ["<@&622357937012342784>"],
+    "news_role": "<@&622357937012342784>",
+    "ban_role":"594855768121933834",
+    "chat_mute_role":"365835519915196417",
+    "ban_global_role":"381507374248361984",
+    "chat_mute": "cm.png",
+    "ban": "ban.png",
+    "reg_path":"images/reg.gif",
+    "reg_name":"reg.gif",
+    "stats_img":"stats.png"
+    
 }

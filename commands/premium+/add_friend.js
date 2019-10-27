@@ -9,10 +9,10 @@ module.exports = {
     run: async (client, msg, args) => {
         console.log(3)
         if (msg.channel.id === '622737189364695040') {
-            msg.delete()
+            msg.delete().catch(error => console.error)
             let guild = client.guilds.get("303793341529718784");
             let user = guild.members.get(msg.author.id)
-            var premRoleId = user.roles.find(x => x.name.toLowerCase().startsWith('prem')).id
+            var premRoleId = user.roles.find(x => x.name.toLowerCase().startsWith('prem ')).id
             let premCategory = guild.channels.get("371230249398173708");
             let channels = premCategory.children
             let truFal = 0
@@ -61,7 +61,8 @@ module.exports = {
                 'CONNECT': true
                 
             })
-            let message = await msg.author.reply(`Вы успешно добавили игрока ${msg.mentions.members.first()} в друзья!`)
+            let message = await msg.reply(`Вы успешно добавили игрока ${msg.mentions.members.first()} в друзья!`)
+            message.delete(15 * 1000)
             guild.channels.get('563839723395874827').send(`${user} добавил себе в друзья игрока ${msg.mentions.members.first()}`)
 
         }

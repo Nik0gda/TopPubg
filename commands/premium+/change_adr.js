@@ -9,10 +9,10 @@ module.exports = {
     },
     run: async (client, msg, args) => {
         if (msg.channel.id === '622737189364695040') {
-            msg.delete()
+            msg.delete().catch(error => console.error)
             let guild = client.guilds.get("303793341529718784");
             let user = guild.members.get(msg.author.id)
-            var premRoleId = user.roles.find(x => x.name.toLowerCase().startsWith('prem')).id
+            var premRoleId = user.roles.find(x => x.name.toLowerCase().startsWith('prem ')).id
             let premCategory = guild.channels.get("371230249398173708");
             let channels = premCategory.children
             let truFal = 0
@@ -21,7 +21,9 @@ module.exports = {
                     truFal = element.id
                 }
             });
+            console.log(truFal)
             if (truFal == 0) {
+                console.log(truFal,truFal == 0)
                 let message = await msg.reply('У вас нет своей комнаты!')
                 message.delete(10 * 1000)
                 return;
@@ -40,7 +42,7 @@ module.exports = {
                 let index = msg.content.trim().split(/ +/g)[0].indexOf('t')+1
                     let adr = msg.content.slice(index).trim().split(/ +/g)
                     if(isNaN(adr)){
-                        let message = await msg.reply('Вы ввели неправельное сообщение. Пример `f300`')
+                        let message = await msg.reply('Вы ввели неправельное сообщение. Пример `t300`')
                         message.delete(10 * 1000)
                         return;
                     }
@@ -63,7 +65,8 @@ module.exports = {
                 roles_fpp.forEach(obj => {
                     if (obj.adr >= adr || obj.adr == 500) guild.channels.get(truFal).overwritePermissions(guild.roles.get(obj.id),{'VIEW_CHANNEL':true,'CONNECT':true})
                 });
-                let message = await msg.author.reply('Вы успешно поменяли ADR в своей комнате, теперь только люди с адром FPP ' + adr + '+')
+                let message = await msg.reply('Вы успешно поменяли ADR в своей комнате, теперь только люди с адром FPP ' + adr + '+')
+                message.delete(10 * 1000)
                 return;
             }
         }

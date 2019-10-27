@@ -9,7 +9,7 @@ module.exports = {
         },
         run: async (client, msg, args) => {
             if (msg.channel.id === '622737189364695040') {
-                msg.delete()
+                msg.delete().catch(error => console.error)
                 let guild = client.guilds.get("303793341529718784");
                 if(!guild.members.get(msg.author.id).roles.has('562728244785315890')){
                     msg.author.send(`Чтоб использовать эту команду вам нужна роль \`Premium+\``)

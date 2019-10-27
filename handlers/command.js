@@ -11,5 +11,5 @@ module.exports.run = (client) =>{
             if(pull.config.prefix) pull.config.prefix.forEach(a => client.prefix.set(a,pull.config.name))
         }
     };
-    ['guild','premium+'].forEach(x => load(x))
+    ['guild','premium+','moderation'].forEach(x => load(x))
 }

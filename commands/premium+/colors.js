@@ -8,7 +8,7 @@ module.exports = {
 
     },
     run: async (client, msg, args) => {
-        msg.delete()
+        msg.delete().catch(error => console.error)
         if (msg.channel.id === '622737189364695040') {
             function getRandomColor() {
                 var letters = '0123456789ABCDEF';
@@ -22,7 +22,7 @@ module.exports = {
             let code = msg.content.trim().split(/ +/g)[0]
             let guild = client.guilds.get("303793341529718784");
             let user = guild.members.get(msg.author.id)
-            var premRole = user.roles.find(x => x.name.toLowerCase().startsWith('prem')).id
+            var premRole = user.roles.find(x => x.name.toLowerCase().startsWith('prem ')).id
             console.log(premRole)
             if (isNaN(premRole)){
                 msg.author.send('У вас нет Премиум роли!');
